@@ -58,8 +58,8 @@ Article.fetchAll = function() {
     Article.loadAll(rawData);
 
    // 3. Cache it in localStorage so we can skip the server call next time,
-      var string = JSON.stringify(rawData);
-      localStorage.rawData = string;
+      var toCache = JSON.stringify(rawData);
+      localStorage.rawData = toCache;
     });
 
    // 4. And then render the index page (perhaps with an articleView method?).
