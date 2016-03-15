@@ -50,12 +50,12 @@ Article.loadAll = function(rawData) {
   Article.fetchAll = function(callback) {
     if (localStorage.rawData) {
       Article.loadAll(JSON.parse(localStorage.rawData));
-      articleView.initIndexPage();
+      callback();
     } else {
       $.getJSON('/data/hackerIpsum.json', function(rawData) {
         Article.loadAll(rawData);
         localStorage.rawData = JSON.stringify(rawData);
-        articleView.initIndexPage();
+        callback();
       });
     }
   };
@@ -76,7 +76,7 @@ Article.loadAll = function(rawData) {
 // TODO: Chain together a `map` and a `reduce` call to get a rough count of all words in all articles.
 Article.numWordsAll = function() {
   return Article.all.map(function(article) {
-    return article.body.split('').length;
+    return article.body.split(/\b\S+\b/g).length
      // Grab the words from the `article` `body`.
   })
   .reduce(function(a, b) {
@@ -88,7 +88,6 @@ Article.numWordsAll = function() {
 // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names.
 Article.allAuthors = function() {
   return Article.all.map(function(article) {
-    console.log(article.author);
     return article.author;
   })
 
@@ -114,9 +113,17 @@ Article.numWordsByAuthor = function() {
   // written by the specified author.
   return Article.allAuthors().map(function(author) {
     return {
+        name: author,
+        numWords: Article.all.filter(function(article){
+          return article.author === author;
+        }).map(function(instance){
+          return instance.body.split(/\b\S+\b/g).length;
+        }).reduce(function(a,b){
+          return a += b;
+        })
       // name:
       // numWords: someCollection.someArrayMethod().map(...).reduce(...), ...
-    }
+    };
   })
 };
 
