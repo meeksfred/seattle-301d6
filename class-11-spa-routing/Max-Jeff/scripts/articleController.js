@@ -9,6 +9,7 @@
   articlesController.index = function() {
     Article.fetchAll(articleView.initIndexPage);
     $('#about').hide();
+    $('#blog-stats').hide();
     $('#articles').fadeIn();
   };
 
